@@ -113,7 +113,7 @@ endef
 	- 通过描述符得到对应的内存段的起始地址
 	- 将起始地址和偏移地址相加，得到线性地址（虚拟地址）
 	- 线性地址经过变换，最终得到物理地址
-![[pic/Pasted image 20230811143605.png]]
+![[./pic/Pasted image 20230811143605.png]]
 #### 阅读lab1/boot/bootasm.S源码
 1. 为何开启A20，以及如何开启A20
 	- A20是为了确保x86处理器在保护模式下可以寻址大于1MB的系统内存。A20总线能被软件关闭或打开，以此来阻止或允许地址总线收到A20传来的信号。在引导系统时，BIOS先打开A20总线来统计和测试所有的系统内存。而当BIOS准备将计算机的控制权交给操作系统时会先将A20总线关闭。
@@ -418,7 +418,7 @@ lidt(&idt_pd);
 5. `SETGATE(idt[T_SWITCH_TOK], 0, GD_KTEXT, __vectors[T_SWITCH_TOK], DPL_USER);`调用宏 `SETGATE` 来设置一个特殊的 IDT 条目，用于从用户态切换到内核态。这个条目使用了与上面相同的宏参数，只是特权级别被设置为 `DPL_USER`，表示门的特权级别设置为用户级别。
 6. `lidt(&idt_pd);`使用 `lidt` 指令加载 IDT。参数 `&idt_pd` 是 IDT 位置描述符的地址，通过传递给 `lidt` 指令，告诉 CPU IDT 在内存中的位置。
 #### 完善trap.c中的中断处理函数trap()
-- 实现一
+
 ```c
 case IRQ_OFFSET + IRQ_TIMER:
 	ticks++;
@@ -427,6 +427,11 @@ case IRQ_OFFSET + IRQ_TIMER:
 		print_ticks();
 	}
 	break;
+```
+# 扩展练习1
+#### 完善trap中的T_SWITCH_TO*中断
+- 实现一（非标准答案）
+```c
 case T_SWITCH_TOU:
 	//检查是否处于内核模式
 	if ((tf->tf_cs & 3) == 0)
@@ -466,7 +471,7 @@ case T_SWITCH_TOK:
 	}
 break;
 ```
-- 实现二
+- 实现二（标准答案）
 声明临时变量
 ```c
 struct trapframe switchk2u, *switchu2k;
